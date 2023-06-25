@@ -1,10 +1,13 @@
+﻿using System.ComponentModel;
 using System.Net.Mime;
 using Libsweeper;
 using Minesweeper;
+using Winsweeper.Properties;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Winsweeper;
 
-public partial class Form1 : Form {
+public partial class GameWindow : Form {
     private Board _board;
     private const int CellSize = 32;
     private const int XOffset = 10;
@@ -13,39 +16,68 @@ public partial class Form1 : Form {
 
     private readonly Size _cellSize;
 
-    public Form1() {
+    private Timer _timer;
+
+    public GameWindow(int boardSize, int difficulty) {
         InitializeComponent();
-        _board = new Board(new Size(12, 12));
+        Closing += OnClosing;
+        _timer = new Timer { Interval = 18 };
+        _timer.Tick += TimerOnTick;
+        _board = new Board(new Size(10 + difficulty*2, 10 + difficulty * 2), (double)difficulty / 10);
         _cellSize = new Size(CellSize, CellSize);
         _board.Reset();
         FitWindow();
-        CreateCells();
+        NewGame();
+        _timer.Start();
+    }
+
+    private void TimerOnTick(object? sender, EventArgs e) {
+        CheckWin();
+    }
+
+    private void OnClosing(object? sender, CancelEventArgs e) {
+        Application.Exit(e);
     }
 
     private void FitWindow() {
         ClientSize = new Size(_board.Size.Width * CellSize + XOffset * 2, _board.Size.Height * CellSize + YOffset * 2);
     }
 
-    private void CreateCells() {
+    private void CheckWin()
+    {
+        if (!_board.CheckWin()) return;
+        _timer.Stop();
+        new GameDialog(Resources.Cool, "You won!", "Congratulations!").ShowDialog(this);
+        _board.Reset();
+        NewGame();
+        _timer.Start();
+    }
+
+    private void NewGame() {
+        Text = "Minesweeper";
         Controls.Clear();
+        List< Button > lst = new();
+
         for (int y = 0; y < _board.Size.Height; y++) {
             for (int x = 0; x < _board.Size.Width; x++) {
                 Button b = new() {
                     Size = _cellSize,
+                    BackColor = Color.White,
                     Tag = _board.Cells[ y, x ],
                     Location = new Point(x * CellSize + XOffset, y * CellSize + YOffset),
                     Font = new Font("Arial", 12, FontStyle.Bold)
                 };
                 b.MouseClick += Cell_Click;
-                Controls.Add(b);
+                lst.Add(b);
             }
         }
+
+        Controls.AddRange(lst.Cast< Control >().ToArray());
     }
 
     private void Cell_Click(object? sender, MouseEventArgs e) {
         if (sender is not Button b) return;
         if (b.Tag is not Cell c) return;
-
         switch (e.Button) {
             case MouseButtons.Right:
                 // Add more logic to turn a flag into a question
@@ -95,8 +127,19 @@ public partial class Form1 : Form {
         foreach(Button b in Controls)
         {
             if (b.Tag is not Cell c) continue;
-            if (!c.Visited) continue;
-            b.Text = c.LiveNeighbors.ToString();
+            if (!c.Visited)
+            {
+                b.Text = c.Flagged ? "F" : "";
+                continue;
+            }
+            
+            if (c.LiveBomb)
+            {
+                b.Text = "💣";
+                b.BackColor = Color.Red;
+                continue;
+            }
+            b.Text = c.LiveNeighbors is > 0 and < 9 ? c.LiveNeighbors.ToString() : "";
             b.BackColor = Color.LightGray;
         }
     }
@@ -107,8 +150,13 @@ public partial class Form1 : Form {
     private void GameOver()
     {
         Text = @"Game Over";
-        MessageBox.Show(@"Game Over", @"Oh no!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        _timer.Stop();
+
+        new GameDialog(Resources.Boom, "Oh no! You have just stepped on a mine!\nBUMMER!", "Game Over!").ShowDialog(this);
         _board.Reset();
-        CreateCells();
+        NewGame();
+
+        _timer.Start();
     }
 }

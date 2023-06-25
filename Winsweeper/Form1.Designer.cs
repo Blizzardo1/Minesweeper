@@ -1,6 +1,6 @@
 ﻿namespace Winsweeper
 {
-    partial class Form1
+    partial class GameWindow
     {
         /// <summary>
         ///  Required designer variable.
@@ -30,12 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // Form1
+            // GameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(683, 609);
-            this.Name = "Form1";
+            this.Name = "GameWindow";
             this.Text = "Minesweeper";
             this.ResumeLayout(false);
 

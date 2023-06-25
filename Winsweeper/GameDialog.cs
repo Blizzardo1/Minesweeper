@@ -12,6 +12,9 @@ using Winsweeper.Properties;
 namespace Winsweeper
 {
     public partial class GameDialog : Form {
+
+        private const int ImagePadding = 10;
+        private const int Amplifier = 2;
         private Image _img;
         private string _text;
         private string _caption;
@@ -26,7 +29,14 @@ namespace Winsweeper
         public GameDialog(Image img, string text, string caption, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None)
         {
             InitializeComponent();
-            Paint += OnPaint;
+            _img = img;
+            _text = text;
+
+            _caption = caption;
+            _buttons = buttons;
+            _icon = icon;
+            _result = DialogResult.None;
+            
             button1.Click += Button_Click;
             button2.Click += Button_Click;
             button3.Click += Button_Click;
@@ -39,17 +49,20 @@ namespace Winsweeper
             Close();
         }
 
-        private void OnPaint(object? sender, PaintEventArgs e) {
-            Graphics g = CreateGraphics();
-            var size = g.MeasureString(_text, Font).ToSize();
-            g.DrawImage(_img, new Point(Width / 2 - _img.Width / 2, 10));
-            g.DrawString(_text, Font, Brushes.Black, new Point(Width / 2 - size.Width / 2, _img.Height + 10));
-            
-            g.Dispose();
+        public new DialogResult ShowDialog(IWin32Window window) {
+            if (FromHandle(window.Handle) is not Form f) return ShowDialog();
+
+            int wx = f.Location.X + (Width / 2 - f.Width / 2);      // f.Location.X + (f.Width - Width) / 2;
+            int hy = f.Location.Y + ( Height / 2 - f.Height / 2 );  // f.Location.Y + ( f.Height - Height ) / 2;
+            Location = new Point(wx, hy);
+            return base.ShowDialog(window);
         }
 
         private void Design()
         {
+            label1.Text = _text;
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.Image = _img;
             Text = _caption;
             switch (_buttons)
             {
