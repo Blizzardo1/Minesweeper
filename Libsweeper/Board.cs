@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using Minesweeper;
+﻿using System.Diagnostics;
+using System.Drawing;
 
 namespace Libsweeper; 
 
@@ -7,20 +7,30 @@ namespace Libsweeper;
 /// Minesweeper Game Board
 /// </summary>
 public class Board {
-
-
     private Size _size;
     private Cell[,] _cells;
     private double _difficulty;
     private int _bombCount;
     private int _safeCells;
+    private Stopwatch _stopwatch;
 
+    /// <summary>
+    /// Represents the elapsed time of an active game.
+    /// </summary>
+    public Stopwatch Stopwatch => _stopwatch;
+
+    /// <summary>
+    /// Represents all the Cells of the Board
+    /// </summary>
     public Cell[,] Cells
     {
         get => _cells;
         set => _cells = value;
     }
 
+    /// <summary>
+    /// Represents the Size of the Board
+    /// </summary>
     public Size Size
     {
         get => _size;
@@ -45,6 +55,7 @@ public class Board {
         _size = size;
         Difficulty = difficulty;
         _cells = new Cell[size.Width, size.Height];
+        _stopwatch = new Stopwatch();
     }
 
     /// <summary>
@@ -101,8 +112,6 @@ public class Board {
         }
     }
 
-
-
     /// <summary>
     /// Visits all the neighbors of a cell if the cell has less than (difficulty * 10) neighbors
     /// </summary>
@@ -110,6 +119,8 @@ public class Board {
     public void VisitNeighbors(Cell cell) {
         // Live neighbors and difficulty Multiplier are the same
         if (cell.LiveNeighbors > (int)Math.Round(_difficulty * 10)) return;
+        if (cell.Flagged) return;
+
         cell.Visited = true;
         for (int i = cell.Row - 1; i <= cell.Row + 1; i++) {
             for (int j = cell.Column - 1; j <= cell.Column + 1; j++) {
@@ -124,6 +135,7 @@ public class Board {
     /// Resets the board.
     /// </summary>
     public void Reset() {
+        _stopwatch.Reset();
         _cells = null!;
         _cells = new Cell[_size.Width, _size.Height];
         SetupLiveNeighbors();
@@ -138,8 +150,7 @@ public class Board {
         _size = newSize;
     }
 
-       
-
+    
     /// <summary>
     /// Checks if the game is over (all cells are visited)
     /// </summary>
@@ -148,15 +159,19 @@ public class Board {
             
         for (int row = 0; row < _cells.GetLength(0); row++) {
             for(int col = 0; col < _cells.GetLength(1); col++) {
-                winCheck += (_cells[ row, col ] is { Visited: false}) ? 1 : 0;
+                winCheck += _cells[ row, col ] is { Visited: false} ? 1 : 0;
             }
         }
-
-        Console.WriteLine("");
-        return ( winCheck == _bombCount );
+        
+        return winCheck == _bombCount;
             
     }
 
+    /// <summary>
+    /// Flags a given cell
+    /// </summary>
+    /// <param name="row">The Row of which the cell resides</param>
+    /// <param name="column">The Column of which the cell resides</param>
     public void FlagCell(int row, int column) {
         if (_cells[row, column].Visited) return;
         _cells[row, column].Flagged = !_cells[row, column].Flagged;

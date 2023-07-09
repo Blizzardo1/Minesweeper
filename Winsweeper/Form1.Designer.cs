@@ -28,19 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
+            scoresBtn = new Button();
+            SuspendLayout();
+            // 
+            // scoresBtn
+            // 
+            scoresBtn.BackgroundImage = Properties.Resources.Cool;
+            scoresBtn.BackgroundImageLayout = ImageLayout.Zoom;
+            scoresBtn.Location = new Point(65, 12);
+            scoresBtn.Name = "scoresBtn";
+            scoresBtn.Size = new Size(32, 32);
+            scoresBtn.TabIndex = 0;
+            scoresBtn.UseVisualStyleBackColor = true;
+            scoresBtn.Click += scoresBtn_Click;
             // 
             // GameWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(683, 609);
-            this.Name = "GameWindow";
-            this.Text = "Minesweeper";
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(683, 609);
+            Controls.Add(scoresBtn);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            Name = "GameWindow";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Minesweeper";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button scoresBtn;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Minesweeper
+﻿namespace Libsweeper
 {
     public class Cell {
         private int _row;

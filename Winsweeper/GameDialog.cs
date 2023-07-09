@@ -11,7 +11,8 @@ using Winsweeper.Properties;
 
 namespace Winsweeper
 {
-    public partial class GameDialog : Form {
+    public partial class GameDialog : Form
+    {
 
         private const int ImagePadding = 10;
         private const int Amplifier = 2;
@@ -21,7 +22,7 @@ namespace Winsweeper
         private MessageBoxButtons _buttons;
         private MessageBoxIcon _icon;
         private DialogResult _result;
-        
+
         public GameDialog() : this(Resources.Genius, "Hurp?", "What am I even doing here")
         {
         }
@@ -36,24 +37,26 @@ namespace Winsweeper
             _buttons = buttons;
             _icon = icon;
             _result = DialogResult.None;
-            
+
             button1.Click += Button_Click;
             button2.Click += Button_Click;
             button3.Click += Button_Click;
             Design();
         }
 
-        private void Button_Click(object? sender, EventArgs e) {
+        private void Button_Click(object? sender, EventArgs e)
+        {
             if (sender is not Button b) return;
             DialogResult = Enum.Parse<DialogResult>(b.Text, true);
             Close();
         }
 
-        public new DialogResult ShowDialog(IWin32Window window) {
+        public new DialogResult ShowDialog(IWin32Window window)
+        {
             if (FromHandle(window.Handle) is not Form f) return ShowDialog();
 
             int wx = f.Location.X + (Width / 2 - f.Width / 2);      // f.Location.X + (f.Width - Width) / 2;
-            int hy = f.Location.Y + ( Height / 2 - f.Height / 2 );  // f.Location.Y + ( f.Height - Height ) / 2;
+            int hy = f.Location.Y + (Height / 2 - f.Height / 2);  // f.Location.Y + ( f.Height - Height ) / 2;
             Location = new Point(wx, hy);
             return base.ShowDialog(window);
         }
@@ -122,5 +125,5 @@ namespace Winsweeper
             }
         }
     }
-    
+
 }
