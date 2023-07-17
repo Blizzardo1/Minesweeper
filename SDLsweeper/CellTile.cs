@@ -55,6 +55,8 @@ internal class CellTile : IGameObject {
     public void OnClick(object? sender, MouseButtonEvent e) {
         switch (e.Button) {
             case (byte)MouseButton.Left:
+                if(_cell.Flagged) break;
+
                 _cell.Visited = true;
                 break;
             case (byte)MouseButton.Right:

@@ -9,6 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
+MinesweeperM*.zip
+Video.txt
+Youtube.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
