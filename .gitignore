@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+Archive/
 MinesweeperM*.zip
 Video.txt
 Youtube.txt
