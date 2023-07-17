@@ -113,9 +113,9 @@ namespace Winsweeper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap GlassPane {
+        public static System.Drawing.Bitmap GreenFlag {
             get {
-                object obj = ResourceManager.GetObject("GlassPane", resourceCulture);
+                object obj = ResourceManager.GetObject("GreenFlag", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +123,9 @@ namespace Winsweeper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap GreenFlag {
+        public static System.Drawing.Bitmap Tile {
             get {
-                object obj = ResourceManager.GetObject("GreenFlag", resourceCulture);
+                object obj = ResourceManager.GetObject("Tile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

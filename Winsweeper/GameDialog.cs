@@ -21,7 +21,6 @@ namespace Winsweeper
         private string _caption;
         private MessageBoxButtons _buttons;
         private MessageBoxIcon _icon;
-        private DialogResult _result;
 
         public GameDialog() : this(Resources.Genius, "Hurp?", "What am I even doing here")
         {
@@ -36,7 +35,6 @@ namespace Winsweeper
             _caption = caption;
             _buttons = buttons;
             _icon = icon;
-            _result = DialogResult.None;
 
             button1.Click += Button_Click;
             button2.Click += Button_Click;

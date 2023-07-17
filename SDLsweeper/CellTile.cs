@@ -29,13 +29,14 @@ internal class CellTile : IGameObject {
 
     public bool Highlight { get; set; }
 
-    public SDL2.Color Color { get; set; } = new() { R = 0, G = 128, B = 0, A = 255 };
-    public SDL2.Color HighlightColor { get; set; } = new() { R = 0, G = 255, B = 0, A = 255 };
-    public SDL2.Color VisitedColor { get; set; } = new() { R = 128, G = 128, B = 128, A = 255 };
+    public SDL2.Color Color { get; set; } = new() { R = 32, G = 75, B = 128, A = 255 };
+    public SDL2.Color HighlightColor { get; set; } = new() { R = 64, G = 150, B = 255, A = 255 };
+    public SDL2.Color VisitedColor { get; set; } = new() { R = 64, G = 64, B = 64, A = 255 };
     public SDL2.Color FlaggedColor { get; set; } = new() { R = 255, G = 128, B = 0, A = 255 };
-    public SDL2.Color BombColor { get; set; } = new() { R = 255, G = 0, B = 0, A = 255 };
+    public SDL2.Color BombColor { get; set; } = new() { R = 255, G = 150, B = 32, A = 255 };
 
     private SDL2.Color _selectedColor;
+    private bool _inverse;
 
     /// <summary>
     /// Creates a new Cell Tile
@@ -48,12 +49,13 @@ internal class CellTile : IGameObject {
         _renderer = renderer;
         _rect = new Rect { X = XOffset + _cell.Column * (CellSize + CellPadding), Y = YOffset + _cell.Row * (CellSize + CellPadding), W = CellSize, H = CellSize };
         _selectedColor = Color;
+        _inverse = false;
     }
 
     public void OnClick(object? sender, MouseButtonEvent e) {
         switch (e.Button) {
             case (byte)MouseButton.Left:
-                Click?.Invoke(this, new Event { Button = e });
+                _cell.Visited = true;
                 break;
             case (byte)MouseButton.Right:
                 _cell.Flagged = !_cell.Flagged;
@@ -76,11 +78,20 @@ internal class CellTile : IGameObject {
         if (_cell.Visited)
         {
             // Draw Number
-            return;
         }
 
         // Draw Untouched Square
         _ = RenderFillRect(_renderer, ref _rect);
+        _ = SetRenderDrawColor(_renderer, 255, 255, 255, 16);
+        if (_inverse) {
+            _ = RenderDrawLine(_renderer, _rect.X + _rect.W, _rect.Y + _rect.H, _rect.X, _rect.Y + _rect.H);
+            _ = RenderDrawLine(_renderer, _rect.X + _rect.W, _rect.Y, _rect.X + _rect.W, _rect.Y + _rect.H);
+            return;
+        }
+
+        _ = RenderDrawLine(_renderer, _rect.X, _rect.Y, _rect.X + _rect.W, _rect.Y);
+        _ = RenderDrawLine(_renderer, _rect.X, _rect.Y, _rect.X, _rect.Y + _rect.H);
+
     }
 
     /// <inheritdoc />
@@ -98,6 +109,7 @@ internal class CellTile : IGameObject {
         {
             // Ignore, already selected
             _selectedColor = VisitedColor;
+            _inverse = true;
             return;
         }
 

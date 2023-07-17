@@ -17,7 +17,7 @@ namespace SDLsweeper
 
     internal class Game : IGameObject {
 
-        public event EventHandler Quit;
+        public event EventHandler? Quit;
         public event MouseMotionEventHandler? MouseMotion;
         public event MouseButtonEventHandler? MouseButton;
 
@@ -47,12 +47,12 @@ namespace SDLsweeper
         /// </summary>
         /// <param name="size">The Size of the board</param>
         /// <param name="difficulty">The difficulty from 1 to 9</param>
-        public Game(int difficulty) {
+        public Game(int size, int difficulty) {
             _ = SDL.Init(InitFlags.Everything);
             _ = TTF.Init();
             _font = TTF.OpenFont("C:\\Windows\\Fonts\\Arial.ttf", FontSize);
             
-            _board = new Board(new Size(8,8), (double)difficulty / 10);
+            _board = new Board(new Size(size, size), (double)difficulty / 10);
             _cellSize = new Size(CellTile.CellSize, CellTile.CellSize);
             _tiles = new List< IGameObject >();
 

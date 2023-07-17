@@ -133,10 +133,10 @@
   <data name="Genius" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Genius.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="GlassPane" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\GlassPane.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="GreenFlag" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GreenFlag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Tile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Tile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

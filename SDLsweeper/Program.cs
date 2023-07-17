@@ -8,7 +8,7 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
-        var game = new Game(1);
+        var game = new Game(12, 1);
         game.Start();
         while (game.IsRunning) {
             game.Update();

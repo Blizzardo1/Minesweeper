@@ -10,6 +10,21 @@ namespace Winsweeper
 {
     internal static class Extensions
     {
+        public static Image Lighter(this Image image, double factor)
+        {
+            var bmp = new Bitmap(image);
+            for (int i = 0; i < bmp.Width; i++) {
+                for (int j = 0; j < bmp.Height; j++) {
+                    Color c = bmp.GetPixel(i, j);
+                    int r = (int)( c.R * factor ) % 255;
+                    int g = (int)( c.G * factor ) % 255;
+                    int b = (int)( c.B * factor ) % 255;
+                    bmp.SetPixel(i, j, Color.FromArgb(r, g, b));
+                }
+            }
+            return bmp;
+        }
+
         /// <summary>
         /// Normalizes the degree of Hue
         /// </summary>
@@ -118,6 +133,7 @@ namespace Winsweeper
                 _ => Color.FromArgb(alpha, iMax, iMid, iMin)
             };
         }
+
 
         /// <summary>
         /// Gets the description of an <see cref="Enum"/>

@@ -6,6 +6,9 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Winsweeper;
 
+
+// TODO: Cleanup this file
+
 public partial class GameWindow : Form
 {
     private Board _board;
@@ -98,12 +101,16 @@ public partial class GameWindow : Form
                 {
                     Size = _cellSize,
                     BackColor = Color.White,
-                    BackgroundImage = Resources.GlassPane,
+                    BackgroundImage = Resources.Tile,
                     BackgroundImageLayout = ImageLayout.Zoom,
+                    FlatStyle = FlatStyle.Flat,
+                    FlatAppearance = { BorderSize = 0 },
                     Tag = _board.Cells[y, x],
                     Location = new Point(x * CellSize + XOffset, y * CellSize + YOffset + scoresBtn.Height + 5),
                     Font = new Font("Arial", 12, FontStyle.Bold)
                 };
+                b.MouseEnter += Cell_MouseEnter;
+                b.MouseLeave += Cell_MouseLeave;
                 b.MouseDown += Cell_Click;
 
                 lst.Add(b);
@@ -114,6 +121,21 @@ public partial class GameWindow : Form
         _board.Stopwatch.Reset();
         _board.Stopwatch.Start();
 
+    }
+
+    private void Cell_MouseLeave(object? sender, EventArgs e) {
+        if (sender is not Button b) return;
+        if (b.Tag is not Cell c) return;
+        if (c.Flagged || c.Visited) return;
+        b.BackgroundImage = Resources.Tile;
+    }
+
+    private void Cell_MouseEnter(object? sender, EventArgs e)
+    {
+        if (sender is not Button b) return;
+        if (b.Tag is not Cell c) return;
+        if (c.Flagged || c.Visited) return;
+        b.BackgroundImage = Resources.Tile.Lighter(0.4d);
     }
 
     /// <summary>
@@ -183,7 +205,7 @@ public partial class GameWindow : Form
             if (b.Tag is not Cell c) continue;
             if (!c.Visited)
             {
-                b.BackgroundImage = c.Flagged ? Resources.Flag : Resources.GlassPane;
+                b.BackgroundImage = c.Flagged ? Resources.Flag : Resources.Tile;
                 continue;
             }
 
