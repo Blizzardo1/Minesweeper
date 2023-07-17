@@ -51,7 +51,7 @@ public class Board {
     /// </summary>
     /// <param name="size">The size of the board</param>
     /// <param name="difficulty">The difficulty of the game</param>
-    public Board(Size size, double difficulty = 0.2) {
+    public Board(Size size, double difficulty = 0.2d) {
         _size = size;
         Difficulty = difficulty;
         _cells = new Cell[size.Width, size.Height];

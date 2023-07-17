@@ -37,7 +37,6 @@ namespace Winsweeper
 
     public partial class DecisionMaker : Form
     {
-        private Difficulty _difficulty;
         private BoardSize _boardSize;
 
         /// <summary>
@@ -46,7 +45,6 @@ namespace Winsweeper
         public DecisionMaker()
         {
             InitializeComponent();
-            _difficulty = Difficulty.Beginner;
             _boardSize = BoardSize.Small;
             playerNameTxt.Text = Stats.PlayersOrdered.FirstOrDefault()?.Name ?? "Player";
             BuildDecisions();
