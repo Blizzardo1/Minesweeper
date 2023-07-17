@@ -79,7 +79,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.3.1
       
     - name: Setup SdlSharp
-      run: git clone https://github.com/GeorchW/SharpSDL2.git .
+      run: git clone https://github.com/GeorchW/SharpSDL2.git SharpSDL2
     
     # Execute all unit tests in the solution
     - name: Execute unit tests
