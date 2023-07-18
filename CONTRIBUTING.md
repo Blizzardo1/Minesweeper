@@ -177,4 +177,4 @@ Join the [Discord](https://discord.gg/T5xJtpGtvZ)!
 
 <!-- omit in toc -->
 ## Attribution
-[Adonis Deliannis](https://github.com/Blizzardo1)
+This guide is based on the **contributing-gen**. [Make your own](https://github.com/bttger/contributing-gen)!
