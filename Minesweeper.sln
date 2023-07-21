@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SDLsweeper", "SDLsweeper\SD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibsweeperTests", "LibsweeperTests\LibsweeperTests.csproj", "{4C7D95F5-DFBA-4355-BC18-FAE8A2D0E4B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpSDL2", "..\..\Blizzardo1\SharpSDL2\SharpSDL2.csproj", "{1168AE33-0047-4AE4-AD40-FC2EF3B5CD2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpSDL2", "..\..\SharpSDL2\SharpSDL2.csproj", "{1168AE33-0047-4AE4-AD40-FC2EF3B5CD2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
