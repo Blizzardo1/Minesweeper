@@ -75,15 +75,12 @@ namespace SDLsweeper
 
             Height = CellTile.XOffset + CellTile.YOffset + _board.Size.Width * (CellTile.CellSize + CellTile.CellPadding) -
                          CellTile.CellPadding;
-
-            _ = SDL.GetRendererOutputSize(RendererPtr, out int w, out int h);
-            Debug.WriteLine($"Main Window Handle Ptr: {WindowPtr}");
+            
             SDL.SetWindowSize(WindowPtr, Width, Height);
 
             _motionMessage = "";
         }
-
-        [DebuggerStepThrough]
+        
         private void AttachListeners() {
             FirstEvent += OnFirstEvent;
             Quit += OnQuit;
