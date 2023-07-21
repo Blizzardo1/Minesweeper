@@ -9,7 +9,10 @@ namespace SDLsweeper;
 internal interface IGameObject {
     int X { get; }
     int Y { get; }
-    
+
+    int Width { get; }
+    int Height { get; }
+
     string Name { get; }
     void Draw();
     void Update();
