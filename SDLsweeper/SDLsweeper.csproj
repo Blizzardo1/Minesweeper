@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SharpSDL2\SharpSDL2.csproj" />
+    <ProjectReference Include="..\..\..\Blizzardo1\SharpSDL2\SharpSDL2.csproj" />
     <ProjectReference Include="..\Libsweeper\Libsweeper.csproj" />
   </ItemGroup>
 

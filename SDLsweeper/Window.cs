@@ -78,8 +78,6 @@ namespace SDLsweeper {
                 Height,
                 flags);
 
-            Debug.WriteLine($"Window Pointer: {WindowPtr}");
-            Debug.WriteLine("Should be able to transfer back to Callee Class");
             if (WindowPtr == IntPtr.Zero)
             {
                 throw new Exception("Cannot create Window");
