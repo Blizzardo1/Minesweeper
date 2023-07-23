@@ -109,10 +109,12 @@ namespace SDLsweeper {
         /// <inheritdoc />
         public abstract void Draw();
 
+        public Event CurrentEvent { get; protected set; }
+
         /// <inheritdoc />
-        public virtual void Update()
-        {
-            HandleEvents();
+        public virtual void Update(Event e) {
+            CurrentEvent = e;
+            HandleEvents(e);
         }
 
         protected void UpdatePosition(IntPtr window)
@@ -131,165 +133,167 @@ namespace SDLsweeper {
         
         #region Event Handler
 
-        private void HandleEvents() {
-            while (SDL.PollEvent(out Event e) >= 1) {
-                switch (e.Type) {
-                    case EventType.FirstEvent:
-                        OnFirstEvent(e);
-                        break;
-                    case EventType.Quit:
-                        OnQuit(e.Quit);
-                        break;
-                    case EventType.AppTerminating:
-                        OnAppTerminating(e);
-                        break;
-                    case EventType.AppLowMemory:
-                        OnAppLowMemory(e);
-                        break;
-                    case EventType.AppWillEnterBackground:
-                        OnAppWillEnterBackground(e);
-                        break;
-                    case EventType.AppDidEnterBackground:
-                        OnAppDidEnterBackground(e);
-                        break;
-                    case EventType.AppWillEnterForeground:
-                        OnAppWillEnterForeground(e);
-                        break;
-                    case EventType.AppDidEnterForeground:
-                        OnAppDidEnterForeground(e);
-                        break;
-                    case EventType.DisplayEvent:
-                        OnDisplayEvent(e.Display);
-                        break;
-                    case EventType.WindowEvent:
-                        OnWindowEvent(e.Window);
-                        break;
-                    case EventType.SyswmEvent:
-                        OnSyswmEvent(e.Syswm);
-                        break;
-                    case EventType.KeyDown:
-                        OnKeyDown(e.Key);
-                        break;
-                    case EventType.KeyUp:
-                        OnKeyUp(e.Key);
-                        break;
-                    case EventType.TextEditing:
-                        OnTextEditing(e.Edit);
-                        break;
-                    case EventType.TextInput:
-                        OnTextInput(e.Text);
-                        break;
-                    case EventType.KeymapChanged:
-                        OnKeymapChanged(e.Key);
-                        break;
-                    case EventType.MouseMotion:
-                        OnMouseMove(e.Motion);
-                        break;
-                    case EventType.MouseButtonDown:
-                        OnMouseDown(e.Button);
-                        break;
-                    case EventType.MouseButtonUp:
-                        OnMouseUp(e.Button);
-                        break;
-                    case EventType.MouseWheel:
-                        OnMouseWheel(e.Wheel);
-                        break;
-                    case EventType.JoyAxisMotion:
-                        OnJoyAxisMotion(e.JAxis);
-                        break;
-                    case EventType.JoyBallMotion:
-                        OnJoyBallMotion(e.JBall);
-                        break;
-                    case EventType.JoyHatMotion:
-                        OnJoyHatMotion(e.JHat);
-                        break;
-                    case EventType.JoyButtonDown:
-                        OnJoyButtonDown(e.JButton);
-                        break;
-                    case EventType.JoyButtonUp:
-                        OnJoyButtonUp(e.JButton);
-                        break;
-                    case EventType.JoyDeviceAdded:
-                        OnJoyDeviceAdded(e.JDevice);
-                        break;
-                    case EventType.JoyDeviceRemoved:
-                        OnJoyDeviceRemoved(e.JDevice);
-                        break;
-                    case EventType.ControllerAxisMotion:
-                        OnControllerAxisMotion(e.CAxis);
-                        break;
-                    case EventType.ControllerButtonDown:
-                        OnControllerButtonDown(e.CButton);
-                        break;
-                    case EventType.ControllerButtonUp:
-                        OnControllerButtonUp(e.CButton);
-                        break;
-                    case EventType.ControllerDeviceAdded:
-                        OnControllerDeviceAdded(e.CDevice);
-                        break;
-                    case EventType.ControllerDeviceRemoved:
-                        OnControllerDeviceRemoved(e.CDevice);
-                        break;
-                    case EventType.ControllerDeviceRemapped:
-                        OnControllerDeviceRemapped(e.CDevice);
-                        break;
-                    case EventType.FingerDown:
-                        OnFingerDown(e.TFinger);
-                        break;
-                    case EventType.FingerUp:
-                        OnFingerUp(e.TFinger);
-                        break;
-                    case EventType.FingerMotion:
-                        OnFingerMotion(e.TFinger);
-                        break;
-                    case EventType.DollarGesture:
-                        OnDollarGesture(e.DGesture);
-                        break;
-                    case EventType.DollarRecord:
-                        OnDollarRecord(e.DGesture);
-                        break;
-                    case EventType.MultiGesture:
-                        OnMultiGesture(e.MGesture);
-                        break;
-                    case EventType.ClipboardUpdate:
-                        OnClipboardUpdate(e);
-                        break;
-                    case EventType.DropFile:
-                        OnDropFile(e.Drop);
-                        break;
-                    case EventType.DropText:
-                        OnDropText(e.Drop);
-                        break;
-                    case EventType.DropBegin:
-                        OnDropBegin(e.Drop);
-                        break;
-                    case EventType.DropComplete:
-                        OnDropComplete(e.Drop);
-                        break;
-                    case EventType.AudioDeviceAdded:
-                        OnAudioDeviceAdded(e.ADevice);
-                        break;
-                    case EventType.AudioDeviceRemoved:
-                        OnAudioDeviceRemoved(e.ADevice);
-                        break;
-                    case EventType.SensorUpdate:
-                        OnSensorUpdate(e.Sensor);
-                        break;
-                    case EventType.RenderTargetsReset:
-                        OnRenderTargetsReset(e);
-                        break;
-                    case EventType.RenderDeviceReset:
-                        OnRenderDeviceReset(e);
-                        break;
-                    case EventType.UserEvent:
-                        OnUserEvent(e.User);
-                        break;
-                    case EventType.LastEvent:
-                        OnLastEvent(e);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+        private void HandleEvents(Event e) {
+
+            switch (e.Type) {
+                case EventType.FirstEvent:
+                    OnFirstEvent(e);
+                    break;
+                case EventType.Quit:
+                    OnQuit(e.Quit);
+                    break;
+                case EventType.AppTerminating:
+                    OnAppTerminating(e);
+                    break;
+                case EventType.AppLowMemory:
+                    OnAppLowMemory(e);
+                    break;
+                case EventType.AppWillEnterBackground:
+                    OnAppWillEnterBackground(e);
+                    break;
+                case EventType.AppDidEnterBackground:
+                    OnAppDidEnterBackground(e);
+                    break;
+                case EventType.AppWillEnterForeground:
+                    OnAppWillEnterForeground(e);
+                    break;
+                case EventType.AppDidEnterForeground:
+                    OnAppDidEnterForeground(e);
+                    break;
+                case EventType.DisplayEvent:
+                    OnDisplayEvent(e.Display);
+                    break;
+                case EventType.WindowEvent:
+                    OnWindowEvent(e.Window);
+                    break;
+                case EventType.SyswmEvent:
+                    OnSyswmEvent(e.Syswm);
+                    break;
+                case EventType.KeyDown:
+                    OnKeyDown(e.Key);
+                    break;
+                case EventType.KeyUp:
+                    OnKeyUp(e.Key);
+                    break;
+                case EventType.TextEditing:
+                    OnTextEditing(e.Edit);
+                    break;
+                case EventType.TextInput:
+                    OnTextInput(e.Text);
+                    break;
+                case EventType.KeymapChanged:
+                    OnKeymapChanged(e.Key);
+                    break;
+                case EventType.MouseMotion:
+                    OnMouseMove(e.Motion);
+                    break;
+                case EventType.MouseButtonDown:
+                    OnMouseDown(e.Button);
+                    break;
+                case EventType.MouseButtonUp:
+                    OnMouseUp(e.Button);
+                    break;
+                case EventType.MouseWheel:
+                    OnMouseWheel(e.Wheel);
+                    break;
+                case EventType.JoyAxisMotion:
+                    OnJoyAxisMotion(e.JAxis);
+                    break;
+                case EventType.JoyBallMotion:
+                    OnJoyBallMotion(e.JBall);
+                    break;
+                case EventType.JoyHatMotion:
+                    OnJoyHatMotion(e.JHat);
+                    break;
+                case EventType.JoyButtonDown:
+                    OnJoyButtonDown(e.JButton);
+                    break;
+                case EventType.JoyButtonUp:
+                    OnJoyButtonUp(e.JButton);
+                    break;
+                case EventType.JoyDeviceAdded:
+                    OnJoyDeviceAdded(e.JDevice);
+                    break;
+                case EventType.JoyDeviceRemoved:
+                    OnJoyDeviceRemoved(e.JDevice);
+                    break;
+                case EventType.ControllerAxisMotion:
+                    OnControllerAxisMotion(e.CAxis);
+                    break;
+                case EventType.ControllerButtonDown:
+                    OnControllerButtonDown(e.CButton);
+                    break;
+                case EventType.ControllerButtonUp:
+                    OnControllerButtonUp(e.CButton);
+                    break;
+                case EventType.ControllerDeviceAdded:
+                    OnControllerDeviceAdded(e.CDevice);
+                    break;
+                case EventType.ControllerDeviceRemoved:
+                    OnControllerDeviceRemoved(e.CDevice);
+                    break;
+                case EventType.ControllerDeviceRemapped:
+                    OnControllerDeviceRemapped(e.CDevice);
+                    break;
+                case EventType.FingerDown:
+                    OnFingerDown(e.TFinger);
+                    break;
+                case EventType.FingerUp:
+                    OnFingerUp(e.TFinger);
+                    break;
+                case EventType.FingerMotion:
+                    OnFingerMotion(e.TFinger);
+                    break;
+                case EventType.DollarGesture:
+                    OnDollarGesture(e.DGesture);
+                    break;
+                case EventType.DollarRecord:
+                    OnDollarRecord(e.DGesture);
+                    break;
+                case EventType.MultiGesture:
+                    OnMultiGesture(e.MGesture);
+                    break;
+                case EventType.ClipboardUpdate:
+                    OnClipboardUpdate(e);
+                    break;
+                case EventType.DropFile:
+                    OnDropFile(e.Drop);
+                    break;
+                case EventType.DropText:
+                    OnDropText(e.Drop);
+                    break;
+                case EventType.DropBegin:
+                    OnDropBegin(e.Drop);
+                    break;
+                case EventType.DropComplete:
+                    OnDropComplete(e.Drop);
+                    break;
+                case EventType.AudioDeviceAdded:
+                    OnAudioDeviceAdded(e.ADevice);
+                    break;
+                case EventType.AudioDeviceRemoved:
+                    OnAudioDeviceRemoved(e.ADevice);
+                    break;
+                case EventType.SensorUpdate:
+                    OnSensorUpdate(e.Sensor);
+                    break;
+                case EventType.RenderTargetsReset:
+                    OnRenderTargetsReset(e);
+                    break;
+                case EventType.RenderDeviceReset:
+                    OnRenderDeviceReset(e);
+                    break;
+                case EventType.UserEvent:
+                    OnUserEvent(e.User);
+                    break;
+                case EventType.LastEvent:
+                    OnLastEvent(e);
+                    break;
+                case (EventType)32512:
+                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(e), e.ToString());
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SDL2;
 
 namespace SDLsweeper; 
 
@@ -15,6 +16,6 @@ internal interface IGameObject {
 
     string Name { get; }
     void Draw();
-    void Update();
+    void Update(Event e);
     
 }
