@@ -5,41 +5,25 @@ using static SDL2.SDL;
 
 namespace SDLsweeper;
 
-internal class CellTile : Renderer, IGameObject {
+internal class CellTile : Button {
     internal const int CellSize = 32;
     internal const int CellPadding = 2;
     internal const int XOffset = 10;
     internal const int YOffset = 100;
 
-
-    public event EventHandler? Click;
-
-
     private readonly Cell _cell;
     private Rect _rect;
-
-    public int X => _rect.X;
-    public int Y => _rect.Y;
-
-    public int Width => _rect.W;
-    public int Height => _rect.H;
-
-    /// <inheritdoc />
-    public string Name => "Tile";
+    
+    public new string Name => "Tile";
 
     public int Row => _cell.Row;
     public int Column => _cell.Column;
 
-    public bool Highlight { get; set; }
     public Cell Cell => _cell;
 
-    public SDL2.Color Color { get; set; } = new() { R = 32, G = 75, B = 128, A = 255 };
-    public SDL2.Color HighlightColor { get; set; } = new() { R = 64, G = 150, B = 255, A = 255 };
     public SDL2.Color VisitedColor { get; set; } = new() { R = 64, G = 64, B = 64, A = 255 };
     public SDL2.Color FlaggedColor { get; set; } = new() { R = 255, G = 128, B = 0, A = 255 };
     public SDL2.Color BombColor { get; set; } = new() { R = 255, G = 150, B = 32, A = 255 };
-
-    public SDL2.Color Foreground { get; } = new() { R = 255, G = 255, B = 255, A = 255 }; // White
 
     private SDL2.Color _selectedColor;
     private bool _inverse;
@@ -49,89 +33,71 @@ internal class CellTile : Renderer, IGameObject {
     /// </summary>
     /// <param name="cell">A Reference to a Cell</param>
     /// <param name="rendererPtr">A pointer to a rendererPtr</param>
-    public CellTile(Cell cell , IntPtr rendererPtr)
-    {
+    public CellTile(Cell cell, IntPtr rendererPtr) : base(rendererPtr) {
         _cell = cell;
-        Initialize(rendererPtr);
-        _rect = new Rect { X = XOffset + _cell.Column * (CellSize + CellPadding), Y = YOffset + _cell.Row * (CellSize + CellPadding), W = CellSize, H = CellSize };
-        _selectedColor = Color;
-        _inverse = false;
-    }
-
-    public void OnClick(object? sender, MouseButtonEvent e) {
-        if (_cell.Visited) return;
-        
-        switch (e.Button) {
-            case (byte)MouseButton.Left:
-                if(_cell.Flagged) break;
-                _cell.Visited = true;
-                
-                break;
-            case (byte)MouseButton.Right:
-                _cell.Flagged = !_cell.Flagged;
-                break;
-        }
-
-        Click?.Invoke(sender, new Event { Button = e});
+        _rect = new Rect {
+            X = XOffset + _cell.Column * ( CellSize + CellPadding ),
+            Y = YOffset + _cell.Row * ( CellSize + CellPadding ), W = CellSize, H = CellSize
+        };
     }
 
     #region Implementation of IGameObject
 
     /// <inheritdoc />
-    public void Draw() {
+    public override void Draw() {
         _ = SetRenderDrawColor(RendererPtr, _selectedColor.R, _selectedColor.G, _selectedColor.B, _selectedColor.A);
 
         // Draw Untouched Square
         _ = RenderFillRect(RendererPtr, ref _rect);
         _ = SetRenderDrawColor(RendererPtr, 255, 255, 255, 16);
-        if (_inverse)
-        {
+        if (_inverse) {
             _ = RenderDrawLine(RendererPtr, _rect.X + _rect.W, _rect.Y + _rect.H, _rect.X, _rect.Y + _rect.H);
             _ = RenderDrawLine(RendererPtr, _rect.X + _rect.W, _rect.Y, _rect.X + _rect.W, _rect.Y + _rect.H);
-            return;
+        }
+        else {
+            _ = RenderDrawLine(RendererPtr, _rect.X, _rect.Y, _rect.X + _rect.W, _rect.Y);
+            _ = RenderDrawLine(RendererPtr, _rect.X, _rect.Y, _rect.X, _rect.Y + _rect.H);
         }
 
-        _ = RenderDrawLine(RendererPtr, _rect.X, _rect.Y, _rect.X + _rect.W, _rect.Y);
-        _ = RenderDrawLine(RendererPtr, _rect.X, _rect.Y, _rect.X, _rect.Y + _rect.H);
-        
-        if (_cell.Flagged)
-        {
+        if (_cell.Flagged) {
             // Draw Flag
         }
 
         if (_cell is not { Visited: true, LiveNeighbors: > 0 }) return;
 
         // Draw Number
-        RenderText(_cell.LiveNeighbors.ToString(), _rect.X + 8, _rect.Y + 8, Foreground);
+        RenderText(_cell.LiveNeighbors.ToString(), _rect.X + 10, _rect.Y + 6, ForegroundColor);
 
     }
 
     /// <inheritdoc />
-    public void Update() {
-        if (_cell.Visited)
-        {
+    public override void Update(Event e) {
+
+        if (e.Button.Clicks == 1) {
+            OnClick(this, e.Button);
+        }
+
+        if (_cell.Visited) {
             // Ignore, already selected
             _selectedColor = VisitedColor;
             _inverse = true;
             return;
         }
+
         // Update Mouse Events here
-        if (_cell.Flagged)
-        {
+        if (_cell.Flagged) {
             // If Flag, unflag or question mark
             _selectedColor = FlaggedColor;
             return;
         }
-        if(_cell is {LiveBomb: true, Visited:true})
-        {
+
+        if (_cell is { LiveBomb: true, Visited: true }) {
             _selectedColor = BombColor;
             return;
         }
-        
-
 
         // It's Untouched Square, Select
-        _selectedColor = Highlight ? HighlightColor : Color;
+        _selectedColor = Highlight ? HighlightColor : BackgroundColor;
     }
 
     #endregion

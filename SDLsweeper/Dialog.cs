@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Libsweeper;
 using SDL2;
+using Color = SDL2.Color;
 using Point = SDL2.Point;
 
 namespace SDLsweeper
@@ -19,25 +20,37 @@ namespace SDLsweeper
 
         private readonly Window? _owner;
         private readonly string? _text;
-        private readonly SDL2.Color _background = new() { R = 190, G = 190, B = 190, A = 255 };
+
+        private List<string> _textList;
+
+        private readonly Size _textSize;
+        private readonly Color _background = new() { R = 190, G = 190, B = 190, A = 255 };
 
         private bool _shown;
 
-        public Dialog(Window? owner, string? text, string title)
+        public Dialog(Window? owner, string? text, string? title)
             : base(
-                title,
+                title ?? "Error",
                 new Point { X = 0x7FFFFFFF, Y = 0x7FFFFFFF},
-                new Size(0,0),
+                new Size(300,250),
                 WindowFlags.Hidden)
         {
             AttachListeners();
             _owner = owner;
             _text = text;
-            
-            Initialize(SDL.CreateRenderer(WindowPtr, -1, RendererFlags.Accelerated));
+            _textSize = MeasureString(_text ?? string.Empty);
+
+            InitializeComponents();
         }
 
-        public Dialog(string? text, string title) : this(null, text, title) { }
+        private void InitializeComponents() {
+            SDL.SetWindowSize(WindowPtr, _textSize.Width + 40, _textSize.Height + 120);
+            UpdateSize(WindowPtr);
+
+            _textList = _text?.Split('\n').ToList() ?? new List<string>();
+        }
+
+        public Dialog(string? text, string? title) : this(null, text, title) { }
 
         private void AttachListeners() {
             Quit += OnQuit;
@@ -87,7 +100,12 @@ namespace SDLsweeper
         public override void Draw() {
             _ = SDL.SetRenderDrawColor(RendererPtr, _background.R, _background.G, _background.B, _background.A);
             _ = SDL.RenderClear(RendererPtr);
-            RenderText(_text, 10, 10, new() { R = 0, G = 0, B = 0, A = 255 });
+
+            for(int i = 0; i < _textList.Count; i++) {
+                RenderText(_textList[i], 10, 10 + i * 20, new Color { R = 0, G = 0, B = 0, A = 255 });
+            }
+
+            SDL.RenderPresent(RendererPtr);
         }
 
         public void Close() {
@@ -96,12 +114,19 @@ namespace SDLsweeper
             SDL.DestroyWindow(WindowPtr);
         }
 
-        public void ShowDialog() {
+        public void ShowDialog(Window owner) {
             _shown = true;
             SDL.ShowWindow(WindowPtr);
             while (_shown)
             {
-                Update();
+                _ = SDL.PollEvent(out Event e);
+                
+                // Completely separate from the main Event Engine. Until I figure something out...
+                // Update: Using owner var to get event data, it no longer updates. It gets stuck because main event
+                // handler has nothing to update. I need to figure out how to make it update. For now, ... this.
+                // ~Adonis
+                
+                Update(e); // I wonder if this will break anything
                 Draw();
                 SDL.Delay(10);
             }

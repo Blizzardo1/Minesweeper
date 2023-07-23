@@ -1,3 +1,6 @@
+using SDL2;
+using SDL2.TTF;
+
 namespace SDLsweeper; 
 
 internal static class Program
@@ -8,10 +11,14 @@ internal static class Program
     [STAThread]
     private static void Main()
     {
+        _ = SDL.Init(InitFlags.Everything);
+        _ = TTF.Init();
+        
         var game = new Game(12, 1);
         game.Start();
         while (game.IsRunning) {
-            game.Update();
+            if(SDL.PollEvent(out Event e) >= 1)
+                game.Update(e);
             game.Draw();
         }
     }
