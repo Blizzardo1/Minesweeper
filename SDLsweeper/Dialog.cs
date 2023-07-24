@@ -18,6 +18,8 @@ namespace SDLsweeper
         /// <inheritdoc />
         public override string Name => "Dialog";
 
+        private const int MinWidth = 300;
+        private const int MinHeight = 150;
         private readonly Window? _owner;
         private readonly string? _text;
 
@@ -25,6 +27,7 @@ namespace SDLsweeper
 
         private readonly Size _textSize;
         private readonly Color _background = new() { R = 190, G = 190, B = 190, A = 255 };
+        private readonly Color _foreground = new() { R = 0, G = 0, B = 0, A = 255 };
 
         private bool _shown;
 
@@ -102,7 +105,7 @@ namespace SDLsweeper
             _ = SDL.RenderClear(RendererPtr);
 
             for(int i = 0; i < _textList.Count; i++) {
-                RenderText(_textList[i], 10, 10 + i * 20, new Color { R = 0, G = 0, B = 0, A = 255 });
+                RenderText(_textList[i], 10, 10 + i * 20, _foreground);
             }
 
             SDL.RenderPresent(RendererPtr);

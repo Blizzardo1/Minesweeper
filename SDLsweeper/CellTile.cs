@@ -20,7 +20,7 @@ internal class CellTile : Button {
     public int Column => _cell.Column;
 
     public Cell Cell => _cell;
-
+    
     public SDL2.Color VisitedColor { get; set; } = new() { R = 64, G = 64, B = 64, A = 255 };
     public SDL2.Color FlaggedColor { get; set; } = new() { R = 255, G = 128, B = 0, A = 255 };
     public SDL2.Color BombColor { get; set; } = new() { R = 255, G = 150, B = 32, A = 255 };
@@ -72,10 +72,7 @@ internal class CellTile : Button {
 
     /// <inheritdoc />
     public override void Update(Event e) {
-
-        if (e.Button.Clicks == 1) {
-            OnClick(this, e.Button);
-        }
+        base.Update(e);
 
         if (_cell.Visited) {
             // Ignore, already selected

@@ -14,6 +14,8 @@ namespace SDLsweeper
     {
         public event EventHandler<MouseButtonEvent> Click;
         public event EventHandler<MouseButtonEvent> RightClick;
+        public event EventHandler< MouseMotionEvent > MouseEnter;
+        public event EventHandler<MouseMotionEvent> MouseLeave;
 
         private Rect _rect;
         private bool _inverse;
@@ -60,7 +62,7 @@ namespace SDLsweeper
         public bool Highlight { get; set; }
 
 
-        private SDL2.Color _backgroundColor;
+        private SDL2.Color _selectedColor;
 
         public SDL2.Color BackgroundColor { get; set; } = new() { R = 32, G = 75, B = 128, A = 255 };
         public SDL2.Color HighlightColor { get; set; } = new() { R = 64, G = 150, B = 255, A = 255 };
@@ -77,9 +79,11 @@ namespace SDLsweeper
             Initialize(rendererPtr);
             _rect = new Rect { X = 0, Y = 0, W = 75, H = 23};
             _inverse = false;
+            // Cheap hacky way to preserve original background color
+            _selectedColor = BackgroundColor;
         }
 
-        public void OnClick(object? sender, MouseButtonEvent e)
+        public virtual void OnClick(object? sender, MouseButtonEvent e)
         {
             switch (e.Button)
             {
@@ -92,17 +96,33 @@ namespace SDLsweeper
             }
         }
 
+        public virtual void OnMouseEnter(object? sender, MouseMotionEvent e)
+        {
+            MouseEnter?.Invoke(sender, e);
+        }
+
+        public virtual void OnMouseLeave(object? sender, MouseMotionEvent e)
+        {
+            MouseLeave?.Invoke(sender, e);
+        }
+
         #region Implementation of IGameObject
-        
+
         /// <inheritdoc />
         public virtual void Draw()
         {
-            _ = SetRenderDrawColor(RendererPtr, BackgroundColor.R, BackgroundColor.G, BackgroundColor.B, BackgroundColor.A);
+            _ = SetRenderDrawColor(
+                RendererPtr,
+                _selectedColor.R,
+                _selectedColor.G,
+                _selectedColor.B,
+                _selectedColor.A
+                );
 
             // Draw Untouched Square
             _ = RenderFillRect(RendererPtr, ref _rect);
             _ = SetRenderDrawColor(RendererPtr, 255, 255, 255, 16);
-            if (!_flat) {
+            if (!_flat || Highlight) {
                 if (_inverse) {
                     _ = RenderDrawLine(
                         RendererPtr, X + Width, Y + Height, X, Y + Height);
@@ -126,13 +146,27 @@ namespace SDLsweeper
         public virtual void Update(Event e)
         {
 
-            if (e.Button.Clicks == 1)
+            if (e.Button is { Clicks: 1, Type: EventType.MouseButtonDown })
             {
                 OnClick(this, e.Button);
             }
-            
-            // It's Untouched Square, Select
-            BackgroundColor = Highlight ? HighlightColor : _backgroundColor;
+
+            if (e.Type is EventType.MouseMotion)
+            {
+                if (e.Motion.X >= X && e.Motion.X <= X + Width && e.Motion.Y >= Y && e.Motion.Y <= Y + Height)
+                {
+                    OnMouseEnter(this, e.Motion);
+                    _selectedColor = HighlightColor;
+                }
+                else
+                {
+                    OnMouseLeave(this, e.Motion);
+                    _selectedColor = BackgroundColor;
+                }
+            }
+
+            // It's Untouched, Highlight or not
+            _selectedColor = Highlight ? HighlightColor : BackgroundColor;
         }
         #endregion
     }

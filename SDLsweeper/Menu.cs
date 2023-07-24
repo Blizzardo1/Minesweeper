@@ -51,10 +51,11 @@ namespace SDLsweeper
             Width = width;
         }
 
-        public void AddMenuItem(string text, Action action) {
-            var mi = new MenuItem(RendererPtr) { Text = text, Action = action, Height = Height - 1};
+        public void AddMenuItem(string text, Action action, params MenuItem[]? items) {
+            var mi = new MenuItem(RendererPtr) {Parent = true, Visible = true, Text = text, Action = action, Height = Height - 1};
             mi.Click += MenuItem_Click;
-            
+            mi.Children = items?.ToList() ?? new List<MenuItem>();
+
             _items.Add(mi);
             for (int index = 0; index < _items.Count; index++) {
                 MenuItem? i = _items[ index ];
@@ -74,10 +75,9 @@ namespace SDLsweeper
         public void Draw() {
             _ = SetRenderDrawColor(RendererPtr, 240, 240, 240, 255); // White
             _ = RenderFillRect(RendererPtr, ref _rect);
-            foreach (MenuItem item in _items)
-            {
-                item.Draw();
-            }
+
+            _items.ForEach(mi => mi.Draw());
+            
             _ = SetRenderDrawColor(RendererPtr, 0, 0, 0, 255); // Black
             _ = RenderDrawLine(RendererPtr, X, Y + Height, Width, Y + Height);
 
@@ -87,7 +87,7 @@ namespace SDLsweeper
 
         /// <inheritdoc />
         public void Update(Event e) {
-            
+            _items.ForEach(mi => mi.Update(e));
         }
 
         #endregion

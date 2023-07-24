@@ -88,7 +88,7 @@ namespace SDLsweeper {
 
 
             _menu = new Menu(RendererPtr);
-            _menu.AddMenuItem("File", () => { });
+            _menu.AddMenuItem("File", () => { }, new MenuItem(RendererPtr) { Text = "Exit", Action = () => IsRunning = false});
             _menu.AddMenuItem("Edit", () => { });
             _menu.AddMenuItem("Help", () => { });
             _menu.AddMenuItem("Debug", () => { _debug = !_debug; });
